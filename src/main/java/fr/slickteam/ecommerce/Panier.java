@@ -1,32 +1,38 @@
 package fr.slickteam.ecommerce;
 
+import fr.slickteam.ecommerce.regles.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class Panier {
+    private static final double POIDS_PANIER = 0.5;
 
-    private static final double LIMITE_DE_POIDS = 10.0;
-    private static final double POIDS_PANIER_A_VIDE = 0.5 ;
-    static Set<Produit> contenu;
+    private final Internaute internaute;
+    private final Set<Produit> contenu;
     private double poidsEnKg;
+    private PanierPeutContenirProduit panierPeutContenirProduit;
 
-    public Panier() {
+    public Panier(Internaute internaute) {
         contenu = new HashSet<>();
-        poidsEnKg = POIDS_PANIER_A_VIDE;
+        this.internaute = internaute;
+        this.poidsEnKg = POIDS_PANIER;
     }
 
     public void ajouter(Produit produit) {
-        if (getPoidsEnKilo() + produit.getPoidsEnKilo() < LIMITE_DE_POIDS) {
+        panierPeutContenirProduit = new PanierPeutContenirProduit(internaute);
+        if (panierPeutContenirProduit.isSatisfyBy(new DemandeAjoutProduit(this, produit))) {
             contenu.add(produit);
-            majPoidsDuPanier(produit);
+            majPoids(produit.getPoidsEnKilo());
         }
     }
 
-    private void majPoidsDuPanier(Produit produit) {
-        this.poidsEnKg += produit.getPoidsEnKilo();
+    private void majPoids(double poidsEnKilo) {
+        this.poidsEnKg += poidsEnKilo;
     }
 
-    private double getPoidsEnKilo() {
+
+    public double getPoidsEnKg() {
         return poidsEnKg;
     }
 }
