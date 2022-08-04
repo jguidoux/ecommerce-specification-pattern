@@ -11,17 +11,17 @@ public class Panier {
     private final Internaute internaute;
     private final Set<Produit> contenu;
     private double poidsEnKg;
-    private final PanierAssezLeger panierAssezLeger;
+    private final PeutAjouterProduitAuPanier peutAjouterProduitAuPanier;
 
     public Panier(Internaute internaute) {
         contenu = new HashSet<>();
         this.internaute = internaute;
-        panierAssezLeger = new PanierAssezLeger(internaute);
+        peutAjouterProduitAuPanier = new PeutAjouterProduitAuPanier(internaute);
         this.poidsEnKg = POIDS_PANIER;
     }
 
     public void ajouter(Produit produit) {
-        if (panierAssezLeger.and(new EstProduitDeSaison()).isSatisfyBy(new DemandeAjoutProduit(this, produit))) {
+        if (peutAjouterProduitAuPanier.isSatisfyBy(new DemandeAjoutProduit(this, produit))) {
             contenu.add(produit);
             majPoids(produit.getPoidsEnKilo());
         }
